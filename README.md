@@ -107,9 +107,12 @@ figma-design-system-generator/
 - **Multi-language System**: Complete translation infrastructure
 - **Error Handling**: Comprehensive validation and user feedback
 
-## 🌟 Screenshots
-
-_Add screenshots of your plugin in action here_
+## Screenshots
+![Color Palette](https://raw.githubusercontent.com/enesmuzaffer22/Figma-Desing-System-Generator-Plugin/refs/heads/main/ss1.png)
+![Font Selection](https://raw.githubusercontent.com/enesmuzaffer22/Figma-Desing-System-Generator-Plugin/refs/heads/main/ss2.png)
+![Font Styles](https://raw.githubusercontent.com/enesmuzaffer22/Figma-Desing-System-Generator-Plugin/refs/heads/main/ss3.png)
+![Summary](https://raw.githubusercontent.com/enesmuzaffer22/Figma-Desing-System-Generator-Plugin/refs/heads/main/ss4.png)
+![Result](https://raw.githubusercontent.com/enesmuzaffer22/Figma-Desing-System-Generator-Plugin/refs/heads/main/ss5.png)
 
 ## 🤝 Contributing
 
@@ -240,9 +243,12 @@ figma-design-system-generator/
 - **Çok Dil Sistemi**: Komple çeviri altyapısı
 - **Hata Yönetimi**: Kapsamlı doğrulama ve kullanıcı geri bildirimi
 
-## 🌟 Ekran Görüntüleri
-
-_Eklentinizin çalışır halinin ekran görüntülerini buraya ekleyin_
+## Ekran Görüntüleri
+![Color Palette](https://raw.githubusercontent.com/enesmuzaffer22/Figma-Desing-System-Generator-Plugin/refs/heads/main/ss1.png)
+![Font Selection](https://raw.githubusercontent.com/enesmuzaffer22/Figma-Desing-System-Generator-Plugin/refs/heads/main/ss2.png)
+![Font Styles](https://raw.githubusercontent.com/enesmuzaffer22/Figma-Desing-System-Generator-Plugin/refs/heads/main/ss3.png)
+![Summary](https://raw.githubusercontent.com/enesmuzaffer22/Figma-Desing-System-Generator-Plugin/refs/heads/main/ss4.png)
+![Result](https://raw.githubusercontent.com/enesmuzaffer22/Figma-Desing-System-Generator-Plugin/refs/heads/main/ss5.png)
 
 ## 🤝 Katkıda Bulunma
 
