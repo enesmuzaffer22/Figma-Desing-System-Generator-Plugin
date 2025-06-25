@@ -1,0 +1,14 @@
+{
+  "name": "Design System Generator",
+  "id": "design-system-generator",
+  "api": "1.0.0",
+  "main": "code.js",
+  "capabilities": [],
+  "enableProposedApi": false,
+  "editorType": ["figma"],
+  "ui": "ui.html",
+  "permissions": ["currentuser"],
+  "networkAccess": {
+    "allowedDomains": ["none"]
+  }
+}

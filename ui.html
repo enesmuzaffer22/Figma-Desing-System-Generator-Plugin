@@ -1,0 +1,1516 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Design System Generator</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+        background: #f8f9fa;
+        padding: 24px;
+        height: 100vh;
+        overflow: hidden;
+        margin: 0;
+      }
+
+      .container {
+        max-width: 100%;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      .step {
+        display: none;
+        flex-direction: column;
+        height: calc(100vh - 48px);
+        overflow: hidden;
+      }
+
+      .step.active {
+        display: flex;
+      }
+
+      .step-header {
+        text-align: center;
+        margin-bottom: 30px;
+      }
+
+      .step-title {
+        font-size: 24px;
+        font-weight: 600;
+        color: #1a1a1a;
+        margin-bottom: 8px;
+      }
+
+      .step-subtitle {
+        font-size: 14px;
+        color: #6b7280;
+      }
+
+      .step-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        overflow-y: auto;
+        height: calc(100% - 160px);
+        padding-right: 5px;
+        padding-bottom: 20px;
+      }
+
+      .color-input-section {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .color-input-group {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+        padding: 15px;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        background: white;
+        margin-bottom: 10px;
+      }
+
+      .color-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+        margin-bottom: 10px;
+      }
+
+      .color-name-input {
+        flex: 1;
+        padding: 8px 12px;
+        border: 1px solid #e5e7eb;
+        border-radius: 6px;
+        font-size: 14px;
+        placeholder-color: #9ca3af;
+      }
+
+      .color-name-input:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+      }
+
+      .color-input {
+        width: 50px;
+        height: 50px;
+        border: 3px solid #e5e7eb;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.2s;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .color-input:hover {
+        border-color: #3b82f6;
+        transform: scale(1.05);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+      }
+
+      .color-hex {
+        flex: 1;
+        padding: 12px 16px;
+        border: 2px solid #e5e7eb;
+        border-radius: 8px;
+        font-family: monospace;
+        font-size: 14px;
+        transition: all 0.2s;
+        background: white;
+      }
+
+      .color-hex:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+      }
+
+      .remove-color {
+        background: #ef4444;
+        color: white;
+        border: none;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .add-color {
+        background: #10b981;
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 500;
+      }
+
+      .font-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 10px;
+        flex: 1;
+        overflow-y: auto;
+        padding-right: 5px;
+        min-height: 200px;
+      }
+
+      .font-option {
+        padding: 16px;
+        border: 2px solid #e5e7eb;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.2s;
+        background: white;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        font-size: 15px;
+      }
+
+      .font-option:hover {
+        border-color: #3b82f6;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+
+      .font-option.selected {
+        border-color: #3b82f6;
+        background: #eff6ff;
+      }
+
+      /* Font Stil Seçim Stilleri */
+      .font-styles-section {
+        display: flex;
+        flex-direction: column;
+        gap: 25px;
+        overflow-y: auto;
+        flex: 1;
+        padding-right: 5px;
+        padding-bottom: 20px;
+      }
+
+      .style-category {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 20px;
+      }
+
+      .category-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #1a1a1a;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .category-icon {
+        font-size: 20px;
+      }
+
+      .styles-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 10px;
+      }
+
+      .style-checkbox {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 12px;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s;
+        background: #f9fafb;
+      }
+
+      .style-checkbox:hover {
+        border-color: #3b82f6;
+        background: #f0f9ff;
+      }
+
+      .style-checkbox.selected {
+        border-color: #3b82f6;
+        background: #eff6ff;
+      }
+
+      .style-checkbox input[type="checkbox"] {
+        margin: 0;
+        cursor: pointer;
+      }
+
+      .style-label {
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+      }
+
+      .selected-font-info {
+        background: #f3f4f6;
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 20px;
+        text-align: center;
+      }
+
+      .selected-font-name {
+        font-size: 18px;
+        font-weight: 600;
+        color: #1a1a1a;
+      }
+
+      .summary-section {
+        padding: 20px;
+        background: white;
+        border-radius: 10px;
+        border: 1px solid #e5e7eb;
+      }
+
+      .summary-title {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 15px;
+      }
+
+      .summary-item {
+        margin-bottom: 10px;
+      }
+
+      .summary-colors {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin: 10px 0;
+      }
+
+      .summary-color {
+        width: 80px;
+        height: 40px;
+        border-radius: 8px;
+        border: 2px solid #e5e7eb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 5px;
+      }
+
+      .step-navigation {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 100px;
+        padding: 25px 0 35px 0;
+        border-top: 1px solid #e5e7eb;
+        background: #f8f9fa;
+        flex-shrink: 0;
+        position: sticky;
+        bottom: 0;
+      }
+
+      .btn {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 8px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s;
+        font-size: 14px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      }
+
+      .btn-primary {
+        background: #3b82f6;
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background: #2563eb;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+      }
+
+      .btn-secondary {
+        background: #6b7280;
+        color: white;
+      }
+
+      .btn-secondary:hover {
+        background: #4b5563;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(107, 114, 128, 0.3);
+      }
+
+      .btn-success {
+        background: #10b981;
+        color: white;
+        font-size: 16px;
+        padding: 15px 30px;
+      }
+
+      .btn-success:hover {
+        background: #059669;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+      }
+
+      .progress {
+        width: 100%;
+        height: 6px;
+        background: #e5e7eb;
+        border-radius: 3px;
+        margin-bottom: 30px;
+        overflow: hidden;
+        box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+      }
+
+      .progress-bar {
+        height: 100%;
+        background: linear-gradient(90deg, #3b82f6, #1d4ed8);
+        border-radius: 3px;
+        transition: width 0.3s ease;
+        box-shadow: 0 1px 3px rgba(59, 130, 246, 0.4);
+      }
+
+      .welcome-content {
+        text-align: center;
+        padding: 40px 20px;
+      }
+
+      .welcome-icon {
+        font-size: 60px;
+        margin-bottom: 20px;
+      }
+
+      .loading {
+        text-align: center;
+        padding: 40px;
+      }
+
+      .spinner {
+        border: 3px solid #e5e7eb;
+        border-top: 3px solid #3b82f6;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 20px;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* Scrollbar Stilleri */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 4px;
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: #c1c1c1;
+        border-radius: 4px;
+      }
+
+      ::-webkit-scrollbar-thumb:hover {
+        background: #a8a8a8;
+      }
+
+      /* Firefox scrollbar */
+      * {
+        scrollbar-width: thin;
+        scrollbar-color: #c1c1c1 #f1f1f1;
+      }
+
+      /* Disabled button styles */
+      .btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none !important;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+      }
+
+      .btn:disabled:hover {
+        transform: none !important;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+      }
+
+      /* Dil Seçimi Stilleri */
+      .language-selection {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        text-align: center;
+      }
+
+      .language-title {
+        font-size: 28px;
+        font-weight: 600;
+        color: #1a1a1a;
+        margin-bottom: 12px;
+      }
+
+      .language-subtitle {
+        font-size: 16px;
+        color: #6b7280;
+        margin-bottom: 40px;
+      }
+
+      .language-buttons {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .language-btn {
+        padding: 20px 40px;
+        border: 2px solid #e5e7eb;
+        border-radius: 12px;
+        background: white;
+        cursor: pointer;
+        transition: all 0.3s;
+        font-size: 16px;
+        font-weight: 500;
+        color: #374151;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        min-width: 150px;
+      }
+
+      .language-btn:hover {
+        border-color: #3b82f6;
+        background: #eff6ff;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .language-btn:active {
+        transform: translateY(0);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Dil Seçimi Ekranı -->
+    <div class="language-selection" id="languageSelection">
+      <h1 class="language-title">Choose Your Language / Dil Seçin</h1>
+      <p class="language-subtitle">
+        Select your preferred language to continue / Devam etmek için dilinizi
+        seçin
+      </p>
+      <div class="language-buttons">
+        <button class="language-btn" onclick="setLanguage('en')">
+          🇺🇸 English
+        </button>
+        <button class="language-btn" onclick="setLanguage('tr')">
+          🇹🇷 Türkçe
+        </button>
+      </div>
+    </div>
+
+    <div class="container" id="mainContainer" style="display: none">
+      <!-- Progress Bar -->
+      <div class="progress">
+        <div class="progress-bar" id="progressBar" style="width: 20%"></div>
+      </div>
+
+      <!-- Step 1: Karşılama -->
+      <div class="step active" id="step1">
+        <div class="welcome-content">
+          <div class="welcome-icon">🎨</div>
+          <div class="step-header">
+            <div class="step-title">Design System Generator</div>
+            <div class="step-subtitle">
+              Birkaç adımda kendi design sisteminizi oluşturun
+            </div>
+          </div>
+          <p
+            style="
+              margin: 20px 0 30px 0;
+              color: #6b7280;
+              max-width: 300px;
+              margin-left: auto;
+              margin-right: auto;
+              line-height: 1.5;
+            "
+          >
+            Bu araç sayesinde kolayca renk paleti ve tipografi sistemi
+            oluşturabilirsiniz. Oluşturulan sistem otomatik olarak Figma
+            stillerinize eklenecektir.
+          </p>
+          <button
+            class="btn btn-primary"
+            onclick="nextStep()"
+            style="font-size: 16px; padding: 15px 30px"
+          >
+            Başla
+          </button>
+        </div>
+      </div>
+
+      <!-- Step 2: Renkler -->
+      <div class="step" id="step2">
+        <div class="step-header">
+          <div class="step-title">Renk Paleti</div>
+          <div class="step-subtitle">Design sisteminizin renklerini seçin</div>
+        </div>
+        <div class="step-content">
+          <div class="color-input-section" id="colorInputs">
+            <div class="color-input-group">
+              <div class="color-row">
+                <input
+                  type="color"
+                  class="color-input"
+                  value="#3b82f6"
+                  onchange="updateColorHex(this)"
+                />
+                <input
+                  type="text"
+                  class="color-hex"
+                  value="#3b82f6"
+                  onchange="updateColorInput(this)"
+                />
+                <button
+                  class="remove-color"
+                  onclick="removeColor(this)"
+                  style="display: none"
+                >
+                  ×
+                </button>
+              </div>
+              <input
+                type="text"
+                class="color-name-input"
+                placeholder="Renk adı (örn: Primary, Secondary, Accent)"
+                value="Primary"
+                onchange="updateColorName(this)"
+              />
+            </div>
+          </div>
+          <button class="add-color" onclick="addColor()">+ Renk Ekle</button>
+        </div>
+        <div class="step-navigation">
+          <button class="btn btn-secondary" onclick="prevStep()">← Geri</button>
+          <button class="btn btn-primary" onclick="nextStep()">
+            Devam Et →
+          </button>
+        </div>
+      </div>
+
+      <!-- Step 3: Fontlar -->
+      <div class="step" id="step3">
+        <div class="step-header">
+          <div class="step-title">Font Seçimi</div>
+          <div class="step-subtitle">Typography sisteminiz için font seçin</div>
+        </div>
+        <div class="step-content">
+          <div class="loading" id="fontsLoading">
+            <div class="spinner"></div>
+            <p>Fontlar yükleniyor...</p>
+          </div>
+          <div id="fontContent" style="display: none">
+            <input
+              type="text"
+              id="fontSearch"
+              placeholder="🔍 Font ara..."
+              style="
+                width: 100%;
+                padding: 12px 16px;
+                margin-bottom: 15px;
+                border: 2px solid #e5e7eb;
+                border-radius: 8px;
+                font-size: 14px;
+                transition: all 0.2s;
+                background: white;
+              "
+              onfocus="this.style.borderColor='#3b82f6'; this.style.boxShadow='0 0 0 3px rgba(59, 130, 246, 0.1)'"
+              onblur="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none'"
+            />
+            <div class="font-grid" id="fontGrid"></div>
+          </div>
+        </div>
+        <div class="step-navigation">
+          <button class="btn btn-secondary" onclick="prevStep()">← Geri</button>
+          <button
+            class="btn btn-primary"
+            onclick="nextStep()"
+            id="fontNextBtn"
+            disabled
+          >
+            Devam Et →
+          </button>
+        </div>
+      </div>
+
+      <!-- Step 4: Font Stilleri -->
+      <div class="step" id="step4">
+        <div class="step-header">
+          <div class="step-title">Font Stil Seçimi</div>
+          <div class="step-subtitle">
+            Her kategori için istediğiniz stilleri seçin
+          </div>
+        </div>
+        <div class="step-content">
+          <div class="selected-font-info">
+            <div class="selected-font-name" id="selectedFontDisplay"></div>
+          </div>
+
+          <div class="loading" id="stylesLoading">
+            <div class="spinner"></div>
+            <p>Font stilleri yükleniyor...</p>
+          </div>
+
+          <div
+            class="font-styles-section"
+            id="fontStylesContent"
+            style="display: none"
+          >
+            <!-- Başlıklar -->
+            <div class="style-category">
+              <div class="category-title">
+                <span class="category-icon">📝</span>
+                Başlıklar (H1-H6)
+              </div>
+              <div class="styles-grid" id="headingStyles"></div>
+            </div>
+
+            <!-- Paragraph Regular -->
+            <div class="style-category">
+              <div class="category-title">
+                <span class="category-icon">📄</span>
+                Paragraph Regular
+              </div>
+              <div class="styles-grid" id="paragraphStyles"></div>
+            </div>
+
+            <!-- Paragraph Small -->
+            <div class="style-category">
+              <div class="category-title">
+                <span class="category-icon">📑</span>
+                Paragraph Small
+              </div>
+              <div class="styles-grid" id="smallStyles"></div>
+            </div>
+          </div>
+        </div>
+        <div class="step-navigation">
+          <button class="btn btn-secondary" onclick="prevStep()">← Geri</button>
+          <button
+            class="btn btn-primary"
+            onclick="nextStep()"
+            id="stylesNextBtn"
+            disabled
+          >
+            Devam Et →
+          </button>
+        </div>
+      </div>
+
+      <!-- Step 5: Özet -->
+      <div class="step" id="step5">
+        <div class="step-header">
+          <div class="step-title">Design System Özeti</div>
+          <div class="step-subtitle">
+            Seçimlerinizi kontrol edin ve oluşturun
+          </div>
+        </div>
+        <div class="step-content">
+          <div class="summary-section">
+            <div class="summary-title">Seçilen Renkler</div>
+            <div class="summary-colors" id="summaryColors"></div>
+
+            <div class="summary-title" style="margin-top: 20px">
+              Seçilen Font
+            </div>
+            <div class="summary-item" id="summaryFont"></div>
+
+            <div class="summary-title" style="margin-top: 20px">
+              Seçilen Font Stilleri
+            </div>
+            <div class="summary-item" id="summaryStyles"></div>
+
+            <div
+              style="
+                margin-top: 20px;
+                padding: 15px;
+                background: #f3f4f6;
+                border-radius: 8px;
+              "
+            >
+              <strong>Oluşturulacaklar:</strong>
+              <ul style="margin-top: 10px; padding-left: 20px">
+                <li>
+                  Her renk için 11'li palet (5 koyu + orijinal + 5 açık ton)
+                </li>
+                <li>H1-H6 başlık stilleri (seçilen stillerle)</li>
+                <li>Paragraph Regular stilleri (seçilen stillerle)</li>
+                <li>Paragraph Small stilleri (seçilen stillerle)</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="step-navigation">
+          <button class="btn btn-secondary" onclick="prevStep()">← Geri</button>
+          <button class="btn btn-success" onclick="createDesignSystem()">
+            🎨 Design System Oluştur
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Global değişkenler
+      let currentStep = 1;
+      let selectedFont = "";
+      let availableFonts = [];
+      let availableFontStyles = [];
+      let selectedStyles = {
+        headings: [],
+        paragraph: [],
+        small: [],
+      };
+
+      // Adım geçişleri
+      function nextStep() {
+        if (currentStep === 2 && !validateColors()) {
+          alert(t("fillAllFields"));
+          return;
+        }
+
+        if (currentStep === 3 && !selectedFont) {
+          alert(t("selectFont"));
+          return;
+        }
+
+        if (currentStep === 4 && !validateStyleSelections()) {
+          alert(t("selectStyles"));
+          return;
+        }
+
+        if (currentStep < 5) {
+          currentStep++;
+          updateStep();
+
+          if (currentStep === 3) {
+            loadFonts();
+          } else if (currentStep === 4) {
+            loadFontStyles();
+          } else if (currentStep === 5) {
+            updateSummary();
+          }
+        }
+      }
+
+      function prevStep() {
+        if (currentStep > 1) {
+          currentStep--;
+          updateStep();
+        }
+      }
+
+      function updateStep() {
+        // Tüm adımları gizle
+        document.querySelectorAll(".step").forEach((step) => {
+          step.classList.remove("active");
+        });
+
+        // Aktif adımı göster
+        document.getElementById(`step${currentStep}`).classList.add("active");
+
+        // Progress bar güncelle (step 1 için 20%, step 2 için 40%, step 3 için 60%, step 4 için 80%, step 5 için 100%)
+        const progress = (currentStep / 5) * 100;
+        document.getElementById("progressBar").style.width = `${progress}%`;
+      }
+
+      // Renk yönetimi
+      function addColor() {
+        const colorInputs = document.getElementById("colorInputs");
+        const newColorGroup = document.createElement("div");
+        newColorGroup.className = "color-input-group";
+
+        const randomColor = `#${Math.floor(Math.random() * 16777215)
+          .toString(16)
+          .padStart(6, "0")}`;
+
+        newColorGroup.innerHTML = `
+          <div class="color-row">
+            <input type="color" class="color-input" value="${randomColor}" onchange="updateColorHex(this)">
+            <input type="text" class="color-hex" value="${randomColor}" onchange="updateColorInput(this)">
+            <button class="remove-color" onclick="removeColor(this)">×</button>
+          </div>
+          <input type="text" class="color-name-input" placeholder="${t(
+            "colorNamePlaceholder"
+          )}" onchange="updateColorName(this)">
+        `;
+
+        colorInputs.appendChild(newColorGroup);
+        updateRemoveButtons();
+      }
+
+      function removeColor(button) {
+        button.parentElement.remove();
+        updateRemoveButtons();
+      }
+
+      function updateRemoveButtons() {
+        const colorGroups = document.querySelectorAll(".color-input-group");
+        colorGroups.forEach((group, index) => {
+          const removeBtn = group.querySelector(".remove-color");
+          if (colorGroups.length === 1) {
+            removeBtn.style.display = "none";
+          } else {
+            removeBtn.style.display = "flex";
+          }
+        });
+      }
+
+      function updateColorHex(colorInput) {
+        const hexInput = colorInput.nextElementSibling;
+        hexInput.value = colorInput.value;
+      }
+
+      function updateColorInput(hexInput) {
+        const colorInput = hexInput.previousElementSibling;
+        if (/^#[0-9A-F]{6}$/i.test(hexInput.value)) {
+          colorInput.value = hexInput.value;
+        }
+      }
+
+      function validateColors() {
+        const colorInputs = document.querySelectorAll(".color-input");
+        return colorInputs.length > 0;
+      }
+
+      function getSelectedColors() {
+        const colorGroups = document.querySelectorAll(".color-input-group");
+        return Array.from(colorGroups).map((group) => {
+          const colorInput = group.querySelector(".color-input");
+          const nameInput = group.querySelector(".color-name-input");
+          return {
+            color: colorInput.value,
+            name:
+              nameInput.value ||
+              `Color${Array.from(colorGroups).indexOf(group) + 1}`,
+          };
+        });
+      }
+
+      function updateColorName(input) {
+        // Renk ismi güncellendiğinde herhangi bir işlem yapılabilir
+        console.log("Color name updated:", input.value);
+      }
+
+      // Font yönetimi
+      function loadFonts() {
+        document.getElementById("fontsLoading").style.display = "block";
+        document.getElementById("fontContent").style.display = "none";
+
+        // Figma'dan fontları iste
+        parent.postMessage({ pluginMessage: { type: "get-fonts" } }, "*");
+      }
+
+      function displayFonts(fonts) {
+        availableFonts = fonts;
+        const fontGrid = document.getElementById("fontGrid");
+        const fontsLoading = document.getElementById("fontsLoading");
+        const fontContent = document.getElementById("fontContent");
+        const fontSearch = document.getElementById("fontSearch");
+
+        // Arama fonksiyonu
+        fontSearch.oninput = () => {
+          const searchTerm = fontSearch.value.toLowerCase();
+          filterFonts(searchTerm);
+        };
+
+        renderFonts(fonts);
+
+        fontsLoading.style.display = "none";
+        fontContent.style.display = "block";
+      }
+
+      function renderFonts(fontsToShow) {
+        const fontGrid = document.getElementById("fontGrid");
+        fontGrid.innerHTML = "";
+
+        fontsToShow.forEach((font) => {
+          const fontOption = document.createElement("div");
+          fontOption.className = "font-option";
+          fontOption.textContent = font;
+          fontOption.style.fontFamily = font;
+          fontOption.onclick = () => selectFont(fontOption, font);
+          fontGrid.appendChild(fontOption);
+        });
+      }
+
+      function filterFonts(searchTerm) {
+        const filteredFonts = availableFonts.filter((font) =>
+          font.toLowerCase().includes(searchTerm)
+        );
+        renderFonts(filteredFonts);
+
+        // Seçili font filtrelenmiş listede yoksa seçimi temizle
+        if (selectedFont && !filteredFonts.includes(selectedFont)) {
+          document.querySelectorAll(".font-option").forEach((option) => {
+            option.classList.remove("selected");
+          });
+        } else if (selectedFont && filteredFonts.includes(selectedFont)) {
+          // Seçili font filtrelenmiş listede varsa tekrar seç
+          setTimeout(() => {
+            const options = document.querySelectorAll(".font-option");
+            options.forEach((option) => {
+              if (option.textContent === selectedFont) {
+                option.classList.add("selected");
+              }
+            });
+          }, 10);
+        }
+      }
+
+      function selectFont(element, fontName) {
+        // Önceki seçimi temizle
+        document.querySelectorAll(".font-option").forEach((option) => {
+          option.classList.remove("selected");
+        });
+
+        // Yeni seçimi işaretle
+        element.classList.add("selected");
+        selectedFont = fontName;
+
+        // Devam et butonunu aktifleştir
+        document.getElementById("fontNextBtn").disabled = false;
+      }
+
+      // Font stilleri yönetimi
+      function loadFontStyles() {
+        document.getElementById("stylesLoading").style.display = "block";
+        document.getElementById("fontStylesContent").style.display = "none";
+
+        // Seçilen font ismini göster
+        document.getElementById("selectedFontDisplay").textContent =
+          selectedFont;
+
+        // Figma'dan font stilleri iste
+        parent.postMessage(
+          {
+            pluginMessage: {
+              type: "get-font-styles",
+              fontFamily: selectedFont,
+            },
+          },
+          "*"
+        );
+      }
+
+      function displayFontStyles(styles) {
+        availableFontStyles = styles;
+        const stylesLoading = document.getElementById("stylesLoading");
+        const stylesContent = document.getElementById("fontStylesContent");
+
+        renderStyleCategories(styles);
+
+        stylesLoading.style.display = "none";
+        stylesContent.style.display = "block";
+
+        // Font stilleri yüklendiğinde metinleri güncelle
+        setTimeout(() => updateAllTexts(), 10);
+      }
+
+      function renderStyleCategories(styles) {
+        // Her kategori için stilleri render et
+        renderStylesForCategory("headingStyles", styles);
+        renderStylesForCategory("paragraphStyles", styles);
+        renderStylesForCategory("smallStyles", styles);
+      }
+
+      function renderStylesForCategory(categoryId, styles) {
+        const container = document.getElementById(categoryId);
+        container.innerHTML = "";
+
+        styles.forEach((style) => {
+          const styleCheckbox = document.createElement("div");
+          styleCheckbox.className = "style-checkbox";
+          styleCheckbox.innerHTML = `
+            <input type="checkbox" id="${categoryId}_${style}" onchange="updateStyleSelection('${categoryId}', '${style}', this)">
+            <label for="${categoryId}_${style}" class="style-label">${style}</label>
+          `;
+
+          // Checkbox'a tıklama olayı ekle
+          styleCheckbox.onclick = (e) => {
+            if (e.target.type !== "checkbox") {
+              const checkbox = styleCheckbox.querySelector(
+                'input[type="checkbox"]'
+              );
+              checkbox.checked = !checkbox.checked;
+              updateStyleSelection(categoryId, style, checkbox);
+            }
+          };
+
+          container.appendChild(styleCheckbox);
+        });
+      }
+
+      function updateStyleSelection(categoryId, styleName, checkbox) {
+        const category = categoryId.replace("Styles", "");
+        const categoryKey =
+          category === "heading"
+            ? "headings"
+            : category === "paragraph"
+            ? "paragraph"
+            : "small";
+
+        if (checkbox.checked) {
+          if (!selectedStyles[categoryKey].includes(styleName)) {
+            selectedStyles[categoryKey].push(styleName);
+          }
+        } else {
+          selectedStyles[categoryKey] = selectedStyles[categoryKey].filter(
+            (s) => s !== styleName
+          );
+        }
+
+        // Checkbox'ın parent elementine selected class ekle/çıkar
+        const parent = checkbox.closest(".style-checkbox");
+        if (checkbox.checked) {
+          parent.classList.add("selected");
+        } else {
+          parent.classList.remove("selected");
+        }
+
+        // Devam et butonunu kontrol et
+        updateStylesNextButton();
+      }
+
+      function updateStylesNextButton() {
+        const hasHeadingStyles = selectedStyles.headings.length > 0;
+        const hasParagraphStyles = selectedStyles.paragraph.length > 0;
+        const hasSmallStyles = selectedStyles.small.length > 0;
+
+        const nextBtn = document.getElementById("stylesNextBtn");
+        nextBtn.disabled = !(
+          hasHeadingStyles &&
+          hasParagraphStyles &&
+          hasSmallStyles
+        );
+      }
+
+      function validateStyleSelections() {
+        return (
+          selectedStyles.headings.length > 0 &&
+          selectedStyles.paragraph.length > 0 &&
+          selectedStyles.small.length > 0
+        );
+      }
+
+      // Özet güncelleme
+      function updateSummary() {
+        const colors = getSelectedColors();
+        const summaryColors = document.getElementById("summaryColors");
+        const summaryFont = document.getElementById("summaryFont");
+        const summaryStyles = document.getElementById("summaryStyles");
+
+        // Renkleri göster
+        summaryColors.innerHTML = "";
+        colors.forEach((colorData) => {
+          const colorDiv = document.createElement("div");
+          colorDiv.className = "summary-color";
+          colorDiv.style.backgroundColor = colorData.color;
+          colorDiv.title = `${colorData.name}: ${colorData.color}`;
+          colorDiv.innerHTML = `<span style="color: white; font-size: 10px; font-weight: bold; text-shadow: 1px 1px 1px rgba(0,0,0,0.7);">${colorData.name}</span>`;
+          summaryColors.appendChild(colorDiv);
+        });
+
+        // Font'u göster
+        summaryFont.textContent = selectedFont;
+        summaryFont.style.fontFamily = selectedFont;
+
+        // Font stilleri göster
+        const stylesText = [];
+        if (selectedStyles.headings.length > 0) {
+          stylesText.push(
+            `${t("headingsCategory")}: ${selectedStyles.headings.join(", ")}`
+          );
+        }
+        if (selectedStyles.paragraph.length > 0) {
+          stylesText.push(
+            `${t("paragraphCategory")}: ${selectedStyles.paragraph.join(", ")}`
+          );
+        }
+        if (selectedStyles.small.length > 0) {
+          stylesText.push(
+            `${t("smallCategory")}: ${selectedStyles.small.join(", ")}`
+          );
+        }
+        summaryStyles.innerHTML = stylesText.join("<br>");
+
+        // Özet adımına geldiğinde metinleri güncelle
+        setTimeout(() => updateAllTexts(), 10);
+      }
+
+      // Design system oluşturma
+      function createDesignSystem() {
+        const colors = getSelectedColors();
+
+        if (colors.length === 0 || !selectedFont) {
+          alert(t("fillAllFields"));
+          return;
+        }
+
+        console.log("Sending color data:", colors); // Debug için
+
+        // Figma'ya design system oluşturma mesajı gönder
+        parent.postMessage(
+          {
+            pluginMessage: {
+              type: "create-design-system",
+              data: {
+                colors: colors,
+                fontFamily: selectedFont,
+                fontStyles: selectedStyles,
+              },
+            },
+          },
+          "*"
+        );
+      }
+
+      // Figma'dan gelen mesajları dinle
+      window.onmessage = (event) => {
+        const msg = event.data.pluginMessage;
+
+        if (msg.type === "fonts-list") {
+          displayFonts(msg.fonts);
+        }
+
+        if (msg.type === "font-styles-list") {
+          displayFontStyles(msg.styles);
+        }
+
+        if (msg.type === "design-system-created") {
+          alert(t("systemCreated"));
+          parent.postMessage({ pluginMessage: { type: "close" } }, "*");
+        }
+
+        if (msg.type === "error") {
+          alert(t("errorPrefix") + msg.message);
+        }
+      };
+
+      // Dil Sistemi
+      let currentLanguage = "tr"; // Varsayılan dil
+
+      const translations = {
+        tr: {
+          // Genel
+          designSystemGenerator: "Design System Generator",
+
+          // Step 1 - Karşılama
+          welcomeSubtitle: "Birkaç adımda kendi design sisteminizi oluşturun",
+          welcomeDescription:
+            "Bu araç sayesinde kolayca renk paleti ve tipografi sistemi oluşturabilirsiniz. Oluşturulan sistem otomatik olarak Figma stillerinize eklenecektir.",
+          startButton: "Başla",
+
+          // Step 2 - Renkler
+          colorPaletteTitle: "Renk Paleti",
+          colorPaletteSubtitle: "Design sisteminizin renklerini seçin",
+          colorNamePlaceholder: "Renk adı (örn: Primary, Secondary, Accent)",
+          addColorButton: "+ Renk Ekle",
+
+          // Step 3 - Font Seçimi
+          fontSelectionTitle: "Font Seçimi",
+          fontSelectionSubtitle: "Design sisteminiz için font ailesini seçin",
+          searchFontsPlaceholder: "Font ara...",
+
+          // Step 4 - Font Stilleri
+          fontStylesTitle: "Font Stilleri",
+          fontStylesSubtitle: "için font stillerini seçin",
+          fontStylesDescription:
+            "Her kategori için en az bir stil seçmelisiniz:",
+          continueButton: "Devam Et →",
+          headingsCategory: "Başlıklar (H1-H6)",
+          paragraphCategory: "Paragraph Regular",
+          smallCategory: "Paragraph Small",
+
+          // Step 5 - Özet
+          summaryTitle: "Özet",
+          summarySubtitle: "Design sisteminizi gözden geçirin",
+          selectedColorsTitle: "Seçilen Renkler",
+          selectedFontTitle: "Seçilen Font",
+          selectedStylesTitle: "Seçilen Font Stilleri",
+          whatWillBeCreated: "Oluşturulacaklar:",
+          colorPaletteDesc:
+            "Her renk için 11'li palet (5 koyu + orijinal + 5 açık ton)",
+          headingStylesDesc: "H1-H6 başlık stilleri (seçilen stillerle)",
+          paragraphStylesDesc: "Paragraph Regular stilleri (seçilen stillerle)",
+          smallStylesDesc: "Paragraph Small stilleri (seçilen stillerle)",
+          colorsLabel: "Renkler:",
+          fontLabel: "Font:",
+          stylesLabel: "Stiller:",
+          createButton: "🎨 Design System Oluştur",
+
+          // Navigasyon
+          backButton: "← Geri",
+          nextButton: "İleri →",
+
+          // Mesajlar
+          fillAllFields: "Lütfen tüm alanları doldurun!",
+          selectFont: "Lütfen bir font seçin!",
+          selectStyles: "Lütfen her kategori için en az bir stil seçin!",
+          systemCreated: "Design system başarıyla oluşturuldu! 🎉",
+          errorPrefix: "Hata: ",
+          loading: "Yükleniyor...",
+        },
+        en: {
+          // General
+          designSystemGenerator: "Design System Generator",
+
+          // Step 1 - Welcome
+          welcomeSubtitle: "Create your own design system in a few steps",
+          welcomeDescription:
+            "With this tool, you can easily create color palettes and typography systems. The generated system will be automatically added to your Figma styles.",
+          startButton: "Start",
+
+          // Step 2 - Colors
+          colorPaletteTitle: "Color Palette",
+          colorPaletteSubtitle: "Choose colors for your design system",
+          colorNamePlaceholder: "Color name (e.g., Primary, Secondary, Accent)",
+          addColorButton: "+ Add Color",
+
+          // Step 3 - Font Selection
+          fontSelectionTitle: "Font Selection",
+          fontSelectionSubtitle: "Choose a font family for your design system",
+          searchFontsPlaceholder: "Search fonts...",
+
+          // Step 4 - Font Styles
+          fontStylesTitle: "Font Styles",
+          fontStylesSubtitle: "font styles",
+          fontStylesDescription:
+            "You must select at least one style for each category:",
+          continueButton: "Continue →",
+          headingsCategory: "Headings (H1-H6)",
+          paragraphCategory: "Paragraph Regular",
+          smallCategory: "Paragraph Small",
+
+          // Step 5 - Summary
+          summaryTitle: "Summary",
+          summarySubtitle: "Review your design system",
+          selectedColorsTitle: "Selected Colors",
+          selectedFontTitle: "Selected Font",
+          selectedStylesTitle: "Selected Font Styles",
+          whatWillBeCreated: "What will be created:",
+          colorPaletteDesc:
+            "11-shade palette for each color (5 dark + original + 5 light shades)",
+          headingStylesDesc: "H1-H6 heading styles (with selected styles)",
+          paragraphStylesDesc:
+            "Paragraph Regular styles (with selected styles)",
+          smallStylesDesc: "Paragraph Small styles (with selected styles)",
+          colorsLabel: "Colors:",
+          fontLabel: "Font:",
+          stylesLabel: "Styles:",
+          createButton: "🎨 Create Design System",
+
+          // Navigation
+          backButton: "← Back",
+          nextButton: "Next →",
+
+          // Messages
+          fillAllFields: "Please fill in all fields!",
+          selectFont: "Please select a font!",
+          selectStyles: "Please select at least one style for each category!",
+          systemCreated: "Design system created successfully! 🎉",
+          errorPrefix: "Error: ",
+          loading: "Loading...",
+        },
+      };
+
+      function setLanguage(lang) {
+        currentLanguage = lang;
+
+        // Dil seçim ekranını gizle
+        document.getElementById("languageSelection").style.display = "none";
+
+        // Ana container'ı göster
+        document.getElementById("mainContainer").style.display = "flex";
+
+        // Tüm metinleri güncelle
+        updateAllTexts();
+
+        // Font listesini al
+        loadFonts();
+      }
+
+      function t(key) {
+        return translations[currentLanguage][key] || key;
+      }
+
+      function updateAllTexts() {
+        // Step 1 - Welcome
+        document.querySelector("#step1 .step-title").textContent = t(
+          "designSystemGenerator"
+        );
+        document.querySelector("#step1 .step-subtitle").textContent =
+          t("welcomeSubtitle");
+        document.querySelector("#step1 p").textContent =
+          t("welcomeDescription");
+        document.querySelector("#step1 button").textContent = t("startButton");
+
+        // Step 2 - Colors
+        document.querySelector("#step2 .step-title").textContent =
+          t("colorPaletteTitle");
+        document.querySelector("#step2 .step-subtitle").textContent = t(
+          "colorPaletteSubtitle"
+        );
+        document.querySelector(".color-name-input").placeholder = t(
+          "colorNamePlaceholder"
+        );
+        document.querySelector(".add-color").textContent = t("addColorButton");
+
+        // Step 3 - Font Selection
+        document.querySelector("#step3 .step-title").textContent =
+          t("fontSelectionTitle");
+        document.querySelector("#step3 .step-subtitle").textContent = t(
+          "fontSelectionSubtitle"
+        );
+        document.querySelector("#fontSearch").placeholder = t(
+          "searchFontsPlaceholder"
+        );
+
+        // Step 4 - Font Styles
+        document.querySelector("#step4 .step-title").textContent =
+          t("fontStylesTitle");
+        document.querySelector(
+          "#step4 .step-subtitle"
+        ).innerHTML = `<span id="selectedFontDisplay">${
+          selectedFont || ""
+        }</span> ${t("fontStylesSubtitle")}`;
+
+        // Step 4 - Categories
+        const headingCategory = document.querySelector(
+          ".category-title:nth-of-type(1)"
+        );
+        if (headingCategory) {
+          headingCategory.innerHTML = `<span class="category-icon">📝</span> ${t(
+            "headingsCategory"
+          )}`;
+        }
+
+        const paragraphCategory = document.querySelector(
+          ".category-title:nth-of-type(2)"
+        );
+        if (paragraphCategory) {
+          paragraphCategory.innerHTML = `<span class="category-icon">📄</span> ${t(
+            "paragraphCategory"
+          )}`;
+        }
+
+        const smallCategory = document.querySelector(
+          ".category-title:nth-of-type(3)"
+        );
+        if (smallCategory) {
+          smallCategory.innerHTML = `<span class="category-icon">📑</span> ${t(
+            "smallCategory"
+          )}`;
+        }
+
+        // Step 5 - Summary
+        document.querySelector("#step5 .step-title").textContent =
+          t("summaryTitle");
+        document.querySelector("#step5 .step-subtitle").textContent =
+          t("summarySubtitle");
+
+        // Step 5 içindeki özet başlıkları
+        const summaryTitles = document.querySelectorAll(".summary-title");
+        if (summaryTitles[0])
+          summaryTitles[0].textContent = t("selectedColorsTitle");
+        if (summaryTitles[1])
+          summaryTitles[1].textContent = t("selectedFontTitle");
+        if (summaryTitles[2])
+          summaryTitles[2].textContent = t("selectedStylesTitle");
+
+        // "Oluşturulacaklar" bölümü
+        const createSection = document.querySelector("strong");
+        if (createSection) createSection.textContent = t("whatWillBeCreated");
+
+        // Liste öğeleri
+        const listItems = document.querySelectorAll("#step5 li");
+        if (listItems[0]) listItems[0].textContent = t("colorPaletteDesc");
+        if (listItems[1]) listItems[1].textContent = t("headingStylesDesc");
+        if (listItems[2]) listItems[2].textContent = t("paragraphStylesDesc");
+        if (listItems[3]) listItems[3].textContent = t("smallStylesDesc");
+
+        // Navigation buttons - tüm geri butonları
+        document.querySelectorAll(".btn-secondary").forEach((btn) => {
+          btn.textContent = t("backButton");
+        });
+
+        // Navigation buttons - tüm ileri butonları (Create ve Start hariç)
+        document
+          .querySelectorAll(".btn-primary:not(.btn-success)")
+          .forEach((btn) => {
+            if (
+              !btn.textContent.includes("🎨") &&
+              !btn.textContent.includes("Başla") &&
+              !btn.textContent.includes("Start")
+            ) {
+              btn.textContent = t("nextButton");
+            }
+          });
+
+        // Step 4'teki özel "Devam Et" butonu
+        const stylesNextBtn = document.getElementById("stylesNextBtn");
+        if (stylesNextBtn) {
+          stylesNextBtn.textContent = t("continueButton");
+        }
+
+        // Create Design System butonu
+        document
+          .querySelectorAll(".btn-success, .btn-primary")
+          .forEach((btn) => {
+            if (
+              btn.textContent.includes("🎨") ||
+              btn.textContent.includes("Oluştur") ||
+              btn.textContent.includes("Create Design")
+            ) {
+              btn.textContent = t("createButton");
+            }
+          });
+      }
+
+      // Sayfa yüklendiğinde
+      document.addEventListener("DOMContentLoaded", function () {
+        updateRemoveButtons();
+      });
+    </script>
+  </body>
+</html>
