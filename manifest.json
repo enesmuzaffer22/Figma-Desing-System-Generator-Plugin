@@ -1,6 +1,6 @@
 {
   "name": "Design System Generator",
-  "id": "design-system-generator",
+  "id": "1519699113138905576",
   "api": "1.0.0",
   "main": "code.js",
   "capabilities": [],
@@ -10,5 +10,12 @@
   "permissions": ["currentuser"],
   "networkAccess": {
     "allowedDomains": ["none"]
-  }
+  },
+  "menu": [
+    {
+      "name": "Design System Generator",
+      "command": "open-plugin"
+    }
+  ],
+  "documentAccess": "dynamic-page"
 }

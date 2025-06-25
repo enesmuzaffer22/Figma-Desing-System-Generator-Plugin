@@ -39,7 +39,8 @@ function generateColorShades(hexColor: string): string[] {
     );
   }
 
-  return shades;
+  // Sıralamayı tersine çevir: en açık renk 50, en koyu renk 950 olacak şekilde
+  return shades.reverse();
 }
 
 // Renk paletini oluşturan fonksiyon
